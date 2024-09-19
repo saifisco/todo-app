@@ -1,7 +1,7 @@
 // import "bootstrap/dist/css/bootstrap.min.css";
-import { useState, useEffect, useRef, createContext, useContext } from "react";
+import { useState, useEffect, useRef } from "react";
 const App = () => {
-  const [list, setList] = useState(["pencil", "books", "c", "d", "e"]);
+  const [list, setList] = useState(["pencil", "books"]);
   const [error, setError] = useState(false);
 
   const [editable, setEditable] = useState(-1);
@@ -51,19 +51,20 @@ const App = () => {
                     ) : (
                       <td>{item}</td>
                     )}
-                    <td>
+                    <td style={{ display: "flex" }}>
                       <DeleteButton
                         list={list}
                         setList={setList}
                         index={index}
+                        setEditable={setEditable}
                       />
                       {editable == index ? (
                         <UpdateButton
                           list={list}
                           setList={setList}
                           updateValue={updateValue}
-                          setEditable={setEditable}
                           index={index}
+                          setEditable={setEditable}
                         />
                       ) : (
                         <EditButton
@@ -104,8 +105,10 @@ function AddItem({ setError, setList, setEditable }) {
     if (inputValue == "") {
       inputField.current.focus();
       setError(true);
+      setEditable(-1);
       return;
     }
+    setEditable(-1);
     setInputValue("");
     setList((preVal) => [...preVal, inputValue]);
   }
@@ -167,7 +170,7 @@ function UpdateInput({ updateValue, setUpdateValue }) {
     </td>
   );
 }
-function DeleteButton({ list, setList, index }) {
+function DeleteButton({ list, setList, index, setEditable }) {
   console.log("DeleteButton components rendered");
 
   function deleteHandler(itemID) {
@@ -175,6 +178,7 @@ function DeleteButton({ list, setList, index }) {
       return index != itemID;
     });
     setList(newList);
+    setEditable(-1);
   }
 
   return (
